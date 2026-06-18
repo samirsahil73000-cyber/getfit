@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitCoach Pro — BMI, Diet & Bodybuilding</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+  :root {
+    --purple: #7c3aed;
+    --purple-light: #ede9fe;
+    --pink: #ec4899;
+    --pink-light: #fce7f3;
+    --orange: #f97316;
+    --orange-light: #ffedd5;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --blue: #3b82f6;
+    --blue-light: #dbeafe;
+    --yellow: #f59e0b;
+    --yellow-light: #fef3c7;
+    --red: #ef4444;
+    --teal: #14b8a6;
+    --bg: #f8f7ff;
+    --card: #ffffff;
+    --text: #1e1b4b;
+    --muted: #6b7280;
+    --radius: 20px;
+    --shadow: 0 8px 32px rgba(124,58,237,0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated gradient hero */
+  header {
+    background: linear-gradient(135deg, #7c3aed 0%, #ec4899 40%, #f97316 80%, #f59e0b 100%);
+    background-size: 300% 300%;
+    animation: gradientShift 8s ease infinite;
+    padding: 3rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  @keyframes gradientShift {
+    0%,100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+  }
+  header p {
+    color: rgba(255,255,255,0.9);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+  .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255,255,255,0.4);
+  }
+
+  /* Nav tabs */
+  .nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 1.5rem 1rem;
+    background: #fff;
+    border-bottom: 2px solid #ede9fe;
+    position: sticky; top: 0; z-index: 100;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.08);
+  }
+  .nav-btn {
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    font-family: 'Inter', sans-serif;
+    background: #f3f0ff;
+    color: var(--purple);
+  }
+  .nav-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(124,58,237,0.2); }
+  .nav-btn.active {
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.35);
+    transform: translateY(-2px);
+  }
+
+  /* Sections */
+  .section { display: none; padding: 2rem 1.5rem; max-width: 900px; margin: 0 auto; }
+  .section.active { display: block; animation: fadeSlideIn 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+    border: 1.5px solid #ede9fe;
+    margin-bottom: 1.5rem;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .card:hover { box-shadow: 0 12px 40px rgba(124,58,237,0.15); transform: translateY(-2px); }
+
+  .card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-title .icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  /* Form inputs */
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 0.85rem; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; }
+  input[type="number"], input[type="text"], select {
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    background: #fafafa;
+    color: var(--text);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.12);
+    background: #fff;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 14px 32px;
+    border-radius: 999px;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative; overflow: hidden;
+  }
+  .btn:hover { transform: translateY(-3px); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, #7c3aed, #ec4899);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(124,58,237,0.35);
+  }
+  .btn-primary:hover { box-shadow: 0 10px 32px rgba(124,58,237,0.5); }
+  .btn-green {
+    background: linear-gradient(135deg, #10b981, #14b8a6);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(16,185,129,0.3);
+  }
+  .btn-orange {
+    background: linear-gradient(135deg, #f97316, #f59e0b);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(249,115,22,0.3);
+  }
+  .btn-blue {
+    background: linear-gradient(135deg, #3b82f6, #7c3aed);
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(59,130,246,0.3);
+  }
+
+  /* BMI meter */
+  .bmi-display {
+    text-align: center;
+    padding: 2rem;
+    border-radius: var(--radius);
+    margin-top: 1.5rem;
+    animation: fadeSlideIn 0.5s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .bmi-number {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .bmi-label { font-size: 1.4rem; font-weight: 700; margin: 0.5rem 0; }
+  .bmi-desc { font-size: 0.95rem; opacity: 0.85; max-width: 400px; margin: 0 auto; }
+
+  .bmi-bar-container {
+    margin: 1.5rem auto;
+    max-width: 500px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 999px;
+    height: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .bmi-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .bmi-pointer {
+    position: absolute; top: -4px;
+    width: 22px; height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid rgba(0,0,0,0.3);
+    transform: translateX(-50%);
+    transition: left 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* Stats row */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+  .stat-card {
+    border-radius: 16px;
+    padding: 1.25rem 1rem;
+    text-align: center;
+    transition: transform 0.3s;
+  }
+  .stat-card:hover { transform: scale(1.04); }
+  .stat-card .num { font-size: 1.8rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; }
+  .stat-card .lbl { font-size: 0.78rem; font-weight: 600; margin-top: 4px; opacity: 0.8; }
+
+  /* Meal plan */
+  .meal-option {
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin: 0.5rem 0;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex; align-items: flex-start; gap: 12px;
+  }
+  .meal-option:hover { transform: scale(1.01); }
+  .meal-option.selected { border-color: var(--purple) !important; }
+  .meal-option input[type="radio"] { margin-top: 3px; accent-color: var(--purple); }
+  .meal-option .meal-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+  .meal-option .meal-info p { font-size: 0.84rem; opacity: 0.75; line-height: 1.4; }
+  .meal-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .meal-time-header {
+    display: flex; align-items: center; gap: 10px;
+    margin: 1.5rem 0 0.75rem;
+  }
+  .meal-time-header .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .meal-time-header h3 { font-size: 1rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Weekly plan grid */
+  .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; overflow-x: auto; }
+  .day-col { min-width: 100px; }
+  .day-header {
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: 10px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .exercise-pill {
+    border-radius: 8px;
+    padding: 8px 8px;
+    margin-bottom: 5px;
+    font-size: 0.77rem;
+    font-weight: 600;
+    line-height: 1.3;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  .exercise-pill:hover { transform: scale(1.04); }
+
+  /* Muscle diagram */
+  .muscle-svg { width: 100%; max-width: 300px; display: block; margin: 0 auto; }
+  .muscle-group { cursor: pointer; transition: opacity 0.2s; }
+  .muscle-group:hover { opacity: 0.75; }
+
+  /* AI response area */
+  .ai-box {
+    border-radius: 16px;
+    padding: 1.25rem;
+    border-left: 4px solid;
+    margin-top: 1rem;
+    animation: fadeSlideIn 0.4s ease;
+    line-height: 1.7;
+    font-size: 0.95rem;
+  }
+  .loading-dots span {
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: bounce 1.2s infinite;
+  }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+  }
+
+  /* Highlight chips */
+  .chip {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin: 3px 3px 3px 0;
+  }
+
+  /* Section title */
+  .section-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .section-sub { color: var(--muted); margin-bottom: 1.75rem; font-size: 0.95rem; }
+
+  .divider { height: 2px; background: linear-gradient(90deg, var(--purple-light), var(--pink-light), transparent); border-radius: 999px; margin: 1.5rem 0; }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    header { padding: 2rem 1rem 3rem; }
+    .week-grid { grid-template-columns: repeat(4, 1fr); }
+    .bmi-number { font-size: 3.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">✨ AI-Powered Fitness Coach</div>
+  <h1>🏋️ FitCoach Pro</h1>
+  <p>BMI · Nutrition · Bodybuilding — all in one place</p>
+</header>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showSection('bmi', this)">📊 BMI Calculator</button>
+  <button class="nav-btn" onclick="showSection('diet', this)">🥗 Diet Coach</button>
+  <button class="nav-btn" onclick="showSection('body', this)">💪 Bodybuilding Coach</button>
+</nav>
+
+<!-- ═══════════════ BMI SECTION ═══════════════ -->
+<section id="bmi" class="section active">
+  <h2 class="section-title">BMI Calculator</h2>
+  <p class="section-sub">Enter your details to get your BMI and personalized targets.</p>
+
+  <div class="card">
+    <div class="card-title">
+      <span class="icon" style="background:#ede9fe;">📏</span>
+      Your Measurements
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>AGE (years)</label>
+        <input type="number" id="age" placeholder="25" min="10" max="100">
+      </div>
+      <div class="form-group">
+        <label>GENDER</label>
+        <select id="gender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>WEIGHT (kg)</label>
+        <input type="number" id="weight" placeholder="70" min="20" max="300">
+      </div>
+      <div class="form-group">
+        <label>HEIGHT (cm)</label>
+        <input type="number" id="height" placeholder="175" min="100" max="250">
+      </div>
+      <div class="form-group">
+        <label>ACTIVITY LEVEL</label>
+        <select id="activity">
+          <option value="1.2">Sedentary (desk job)</option>
+          <option value="1.375">Light (1-3x/week)</option>
+          <option value="1.55" selected>Moderate (3-5x/week)</option>
+          <option value="1.725">Active (6-7x/week)</option>
+          <option value="1.9">Very active (athlete)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>GOAL</label>
+        <select id="goal">
+          <option value="lose">Lose weight</option>
+          <option value="maintain">Maintain weight</option>
+          <option value="gain">Gain muscle</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem; display:flex; gap:12px; flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="calcBMI()">Calculate BMI →</button>
+      <button class="btn btn-blue" onclick="getAIAdvice()">🤖 Get AI Advice</button>
+    </div>
+  </div>
+
+  <div id="bmi-result" style="display:none;">
+    <div class="bmi-display" id="bmi-display-bg">
+      <div class="bmi-number" id="bmi-val">--</div>
+      <div class="bmi-label" id="bmi-label">--</div>
+      <div class="bmi-bar-container">
+        <div class="bmi-bar-fill" id="bmi-bar" style="width:0%; background:linear-gradient(90deg,#10b981,#f59e0b,#ef4444);"></div>
+        <div class="bmi-pointer" id="bmi-pointer" style="left:0%;"></div>
+      </div>
+      <div class="bmi-desc" id="bmi-desc"></div>
+    </div>
+
+    <div class="stats-row" id="stats-row"></div>
+
+    <div class="card" style="margin-top:1.5rem;">
+      <div class="card-title"><span class="icon" style="background:#d1fae5;">🎯</span>Your Targets</div>
+      <div id="targets-content"></div>
+    </div>
+
+    <div id="ai-advice-box" style="display:none;"></div>
+  </div>
+</section>
+
+<!-- ═══════════════ DIET SECTION ═══════════════ -->
+<section id="diet" class="section">
+  <h2 class="section-title">AI Diet Coach</h2>
+  <p class="section-sub">Pick your meals for each time slot — two options per meal, personalized to your goal.</p>
+
+  <div class="card">
+    <div class="card-title"><span class="icon" style="background:#fce7f3;">🎨</span>Customize Your Plan</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>DIET TYPE</label>
+        <select id="diet-type">
+          <option value="balanced">Balanced</option>
+          <option value="keto">Keto / Low-carb</option>
+          <option value="vegan">Vegan</option>
+          <option value="high-protein">High Protein</option>
+          <option value="mediterranean">Mediterranean</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ALLERGIES / AVOID</label>
+        <input type="text" id="allergies" placeholder="e.g. nuts, gluten">
+      </div>
+    </div>
+    <button class="btn btn-green" style="margin-top:1.25rem;" onclick="generateDietPlan()">🍽️ Generate My Diet Plan →</button>
+  </div>
+
+  <div id="diet-plan" style="display:none;"></div>
+  <div id="diet-ai-box" style="display:none;"></div>
+</section>
+
+<!-- ═══════════════ BODYBUILDING SECTION ═══════════════ -->
+<section id="body" class="section">
+  <h2 class="section-title">Bodybuilding Coach</h2>
+  <p class="section-sub">Customized weekly training plan with muscle targeting and exercise demos.</p>
+
+  <div class="card">
+    <div class="card-title"><span class="icon" style="background:#ffedd5;">⚙️</span>Configure Your Training</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>TRAINING DAYS / WEEK</label>
+        <select id="train-days">
+          <option value="3">3 days (full body)</option>
+          <option value="4" selected>4 days (upper/lower)</option>
+          <option value="5">5 days (PPL+)</option>
+          <option value="6">6 days (advanced)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>EXPERIENCE</label>
+        <select id="experience">
+          <option value="beginner">Beginner</option>
+          <option value="intermediate" selected>Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>EQUIPMENT</label>
+        <select id="equipment">
+          <option value="full-gym">Full Gym</option>
+          <option value="home-dumbbells">Home + Dumbbells</option>
+          <option value="bodyweight">Bodyweight Only</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>PRIMARY GOAL</label>
+        <select id="train-goal">
+          <option value="hypertrophy">Muscle Hypertrophy</option>
+          <option value="strength">Strength</option>
+          <option value="endurance">Endurance</option>
+          <option value="fat-loss">Fat Loss + Tone</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="margin-top:1.25rem;">
+      <label style="display:block; margin-bottom:8px;">FOCUS MUSCLES (click to select)</label>
+      <div id="muscle-chips" style="display:flex; flex-wrap:wrap; gap:8px;">
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'chest')">💪 Chest</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'back')">🔙 Back</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'shoulders')">🏔️ Shoulders</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'arms')">💪 Arms</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'legs')">🦵 Legs</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'core')">🎯 Core</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'glutes')">🍑 Glutes</span>
+        <span class="chip" style="background:#ede9fe; color:#5b21b6; cursor:pointer;" onclick="toggleMuscle(this,'calves')">🦶 Calves</span>
+      </div>
+    </div>
+    <button class="btn btn-orange" style="margin-top:1.5rem;" onclick="generateWorkout()">💥 Build My Weekly Plan →</button>
+  </div>
+
+  <div id="workout-plan" style="display:none;"></div>
+  <div id="body-ai-box" style="display:none;"></div>
+</section>
+
+<script>
+const API_URL = "https://api.anthropic.com/v1/messages";
+let selectedMuscles = new Set();
+let bmiData = {};
+
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleMuscle(el, muscle) {
+  if (selectedMuscles.has(muscle)) {
+    selectedMuscles.delete(muscle);
+    el.style.background = '#ede9fe';
+    el.style.color = '#5b21b6';
+  } else {
+    selectedMuscles.add(muscle);
+    el.style.background = 'linear-gradient(135deg,#7c3aed,#ec4899)';
+    el.style.color = '#fff';
+  }
+}
+
+/* ─── BMI CALC ─── */
+function calcBMI() {
+  const age = +document.getElementById('age').value;
+  const weight = +document.getElementById('weight').value;
+  const height = +document.getElementById('height').value;
+  const gender = document.getElementById('gender').value;
+  const activity = +document.getElementById('activity').value;
+  const goal = document.getElementById('goal').value;
+
+  if (!age || !weight || !height) { alert('Please fill in all fields!'); return; }
+
+  const h = height / 100;
+  const bmi = (weight / (h * h)).toFixed(1);
+  let cat, bg, color, desc, change;
+
+  if (bmi < 18.5) {
+    cat = 'Underweight'; bg = 'linear-gradient(135deg,#dbeafe,#e0f2fe)'; color = '#1d4ed8';
+    desc = 'You are below a healthy weight range. Focus on nutrient-dense foods and strength training to build mass.';
+    change = `Gain ${(18.5 * h * h - weight).toFixed(1)} kg to reach healthy range`;
+  } else if (bmi < 25) {
+    cat = 'Healthy Weight'; bg = 'linear-gradient(135deg,#d1fae5,#ecfdf5)'; color = '#065f46';
+    desc = 'Great job! You are in a healthy BMI range. Maintain this with balanced nutrition and regular exercise.';
+    change = 'Maintain current weight — you are in the ideal range!';
+  } else if (bmi < 30) {
+    cat = 'Overweight'; bg = 'linear-gradient(135deg,#fef3c7,#fffbeb)'; color = '#92400e';
+    desc = 'You are slightly above the healthy range. A calorie deficit of 300-500 kcal/day will help effectively.';
+    change = `Lose ${(weight - 24.9 * h * h).toFixed(1)} kg to reach healthy BMI`;
+  } else {
+    cat = 'Obese'; bg = 'linear-gradient(135deg,#fee2e2,#fef2f2)'; color = '#991b1b';
+    desc = 'Your BMI is in the obese range. A structured plan with dietary changes and exercise is important.';
+    change = `Lose ${(weight - 24.9 * h * h).toFixed(1)} kg to reach healthy BMI`;
+  }
+
+  // BMR / TDEE
+  const bmr = gender === 'male'
+    ? 10 * weight + 6.25 * height - 5 * age + 5
+    : 10 * weight + 6.25 * height - 5 * age - 161;
+  const tdee = Math.round(bmr * activity);
+  const target = goal === 'lose' ? tdee - 400 : goal === 'gain' ? tdee + 300 : tdee;
+  const protein = Math.round(weight * (goal === 'gain' ? 2.2 : 1.8));
+  const idealWeight = (22 * h * h).toFixed(1);
+
+  bmiData = { bmi, cat, age, weight, height, gender, goal, tdee, target, protein, idealWeight, change };
+
+  document.getElementById('bmi-result').style.display = 'block';
+  const disp = document.getElementById('bmi-display-bg');
+  disp.style.background = bg;
+  disp.style.color = color;
+  document.getElementById('bmi-val').textContent = bmi;
+  document.getElementById('bmi-label').textContent = cat;
+  document.getElementById('bmi-desc').textContent = desc;
+
+  const pct = Math.min(Math.max(((bmi - 15) / 25) * 100, 2), 98);
+  setTimeout(() => {
+    document.getElementById('bmi-bar').style.width = '100%';
+    document.getElementById('bmi-pointer').style.left = pct + '%';
+  }, 100);
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card" style="background:linear-gradient(135deg,#ede9fe,#fce7f3); color:#5b21b6;">
+      <div class="num">${tdee}</div><div class="lbl">Daily calories (TDEE)</div>
+    </div>
+    <div class="stat-card" style="background:linear-gradient(135deg,#d1fae5,#ecfdf5); color:#065f46;">
+      <div class="num">${target}</div><div class="lbl">Target calories</div>
+    </div>
+    <div class="stat-card" style="background:linear-gradient(135deg,#dbeafe,#ede9fe); color:#1e40af;">
+      <div class="num">${protein}g</div><div class="lbl">Daily protein</div>
+    </div>
+    <div class="stat-card" style="background:linear-gradient(135deg,#fef3c7,#ffedd5); color:#92400e;">
+      <div class="num">${idealWeight}</div><div class="lbl">Ideal weight (kg)</div>
+    </div>
+  `;
+
+  document.getElementById('targets-content').innerHTML = `
+    <div style="display:grid; gap:10px;">
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f5f3ff; border-radius:12px;">
+        <span style="font-size:1.5rem;">🎯</span>
+        <div><strong>${change}</strong><div style="font-size:0.82rem; color:#6b7280; margin-top:2px;">Based on your current BMI of ${bmi}</div></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#f0fdf4; border-radius:12px;">
+        <span style="font-size:1.5rem;">🔥</span>
+        <div><strong>Daily calorie target: ${target} kcal</strong><div style="font-size:0.82rem; color:#6b7280; margin-top:2px;">Your TDEE is ${tdee} kcal — ${goal === 'lose' ? '400 kcal deficit' : goal === 'gain' ? '300 kcal surplus' : 'maintenance'}</div></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; padding:12px; background:#eff6ff; border-radius:12px;">
+        <span style="font-size:1.5rem;">💪</span>
+        <div><strong>Protein: ${protein}g/day</strong><div style="font-size:0.82rem; color:#6b7280; margin-top:2px;">${goal === 'gain' ? '2.2g' : '1.8g'} per kg of bodyweight</div></div>
+      </div>
+    </div>
+  `;
+}
+
+async function getAIAdvice() {
+  if (!bmiData.bmi) { calcBMI(); if (!bmiData.bmi) return; }
+  const box = document.getElementById('ai-advice-box');
+  box.style.display = 'block';
+  box.innerHTML = `<div class="ai-box" style="background:#f5f3ff; border-color:#7c3aed; color:#5b21b6;">
+    🤖 <strong>AI Coach thinking...</strong>
+    <div class="loading-dots" style="margin-top:8px;"><span style="background:#7c3aed;"></span><span style="background:#ec4899;"></span><span style="background:#f97316;"></span></div>
+  </div>`;
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
+        messages: [{ role: 'user', content: `I am a ${bmiData.age} year old ${bmiData.gender} weighing ${bmiData.weight}kg, ${bmiData.height}cm tall. My BMI is ${bmiData.bmi} (${bmiData.cat}). My goal is to ${bmiData.goal} weight. My TDEE is ${bmiData.tdee} kcal. Give me 5 specific, motivating, practical tips for my situation. Use emojis and be energetic and encouraging. Format as a numbered list with bold tip titles.` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Could not get AI advice.';
+    box.innerHTML = `<div class="ai-box" style="background:#f5f3ff; border-color:#7c3aed; color:#1e1b4b;">
+      <strong style="color:#7c3aed; font-size:1rem;">🤖 Your Personal AI Coach Says:</strong>
+      <div style="margin-top:10px; white-space:pre-wrap;">${text}</div>
+    </div>`;
+  } catch(e) {
+    box.innerHTML = `<div class="ai-box" style="background:#fef2f2; border-color:#ef4444; color:#991b1b;">⚠️ Could not connect to AI. Please check your API key configuration.</div>`;
+  }
+}
+
+/* ─── DIET PLAN ─── */
+const meals = [
+  { time: '🌅 Breakfast (7:00 AM)', color: '#f97316', bg: '#ffedd5', dot: '#fb923c' },
+  { time: '☀️ Mid-Morning Snack (10:00 AM)', color: '#f59e0b', bg: '#fef3c7', dot: '#fbbf24' },
+  { time: '🌿 Lunch (1:00 PM)', color: '#10b981', bg: '#d1fae5', dot: '#34d399' },
+  { time: '🍎 Afternoon Snack (4:00 PM)', color: '#3b82f6', bg: '#dbeafe', dot: '#60a5fa' },
+  { time: '🌙 Dinner (7:00 PM)', color: '#7c3aed', bg: '#ede9fe', dot: '#8b5cf6' },
+];
+
+const mealOptions = {
+  balanced: [
+    [['🥣 Oatmeal Bowl', 'Rolled oats with banana, honey & almonds','350 kcal | 12g protein'],['🥚 Veggie Egg Scramble','3 eggs, spinach, bell pepper, whole toast','310 kcal | 22g protein']],
+    [['🍎 Apple + Almond Butter','1 apple with 2 tbsp natural almond butter','210 kcal | 6g protein'],['🥜 Mixed Nuts & Yogurt','Greek yogurt with a handful of trail mix','240 kcal | 14g protein']],
+    [['🍗 Grilled Chicken Salad','Chicken breast, quinoa, mixed greens, olive oil','480 kcal | 38g protein'],['🥙 Whole Wheat Wrap','Turkey, avocado, tomato, lettuce wrap','420 kcal | 28g protein']],
+    [['🧀 Cottage Cheese','Low-fat cottage cheese with cucumber slices','160 kcal | 18g protein'],['🫐 Berry Smoothie','Blueberries, protein powder, almond milk','200 kcal | 20g protein']],
+    [['🐟 Salmon & Veggies','Baked salmon, sweet potato, broccoli','520 kcal | 42g protein'],['🍝 Pasta Primavera','Whole wheat pasta, veggies, light tomato sauce','460 kcal | 20g protein']],
+  ],
+  keto: [
+    [['🥑 Avocado Eggs','2 eggs baked in avocado halves','340 kcal | 18g protein'],['🥚 Bacon & Eggs','3 eggs, 3 strips bacon, black coffee','380 kcal | 24g protein']],
+    [['🧀 Cheese & Pepperoni','Cheddar slices with pepperoni','200 kcal | 14g protein'],['🥜 Macadamia Nuts','1 oz macadamia + 1 string cheese','220 kcal | 8g protein']],
+    [['🥩 Burger Bowl','Ground beef, lettuce, cheese, avocado, no bun','560 kcal | 40g protein'],['🐟 Tuna Caesar','Tuna, romaine, parmesan, olive oil dressing','420 kcal | 38g protein']],
+    [['🥓 Hard Boiled Eggs','2 eggs with everything-bagel seasoning','140 kcal | 12g protein'],['🫒 Olives & Salami','Kalamata olives + 4 slices salami','180 kcal | 10g protein']],
+    [['🥩 Ribeye Steak','Ribeye steak with roasted asparagus','580 kcal | 48g protein'],['🍗 Butter Chicken Thighs','Chicken thighs in cream sauce, cauliflower rice','520 kcal | 42g protein']],
+  ],
+  vegan: [
+    [['🌱 Chia Pudding','Chia seeds, oat milk, berries, maple syrup','320 kcal | 10g protein'],['🍞 Avocado Toast','Sourdough, mashed avocado, tomatoes, seeds','340 kcal | 12g protein']],
+    [['🍌 Banana Protein Shake','Banana, pea protein, oat milk, peanut butter','280 kcal | 22g protein'],['🫐 Fruit & Nut Mix','Dates, cashews, dried mango, pumpkin seeds','240 kcal | 8g protein']],
+    [['🫘 Lentil Bowl','Red lentils, brown rice, roasted veggies','480 kcal | 24g protein'],['🌮 Black Bean Tacos','Corn tortillas, black beans, salsa, guacamole','420 kcal | 18g protein']],
+    [['🥕 Hummus & Veggies','Homemade hummus with carrot & celery sticks','180 kcal | 8g protein'],['🍊 Edamame','Salted edamame + a clementine','200 kcal | 16g protein']],
+    [['🥦 Tofu Stir-Fry','Firm tofu, broccoli, snap peas, soy ginger sauce','460 kcal | 30g protein'],['🍛 Chickpea Curry','Chickpeas in tomato coconut curry, brown rice','500 kcal | 22g protein']],
+  ],
+  'high-protein': [
+    [['🥛 Protein Pancakes','Protein powder pancakes with Greek yogurt','400 kcal | 45g protein'],['🐔 Chicken Egg Whites','Egg whites scramble with diced chicken breast','320 kcal | 48g protein']],
+    [['🧆 Protein Bar','High-protein bar 20g+ with a banana','250 kcal | 22g protein'],['🍗 Chicken Jerky','Homemade chicken jerky strips','180 kcal | 28g protein']],
+    [['🐟 Tuna Steak Bowl','Seared tuna, edamame, brown rice, sesame','520 kcal | 52g protein'],['🥩 Lean Beef Bowl','Extra lean ground beef, quinoa, spinach','500 kcal | 48g protein']],
+    [['🥛 Cottage Cheese Parfait','Cottage cheese, berries, protein granola','200 kcal | 25g protein'],['🥚 Boiled Eggs + Turkey','3 boiled eggs + 3oz deli turkey','210 kcal | 30g protein']],
+    [['🦃 Turkey Meatballs','Lean turkey meatballs, zucchini noodles','480 kcal | 52g protein'],['🐟 Salmon Protein Bowl','Baked salmon, lentils, roasted broccoli','540 kcal | 50g protein']],
+  ],
+  mediterranean: [
+    [['🫒 Med Breakfast Plate','Feta, olives, tomatoes, whole wheat pita','360 kcal | 14g protein'],['🥚 Shakshuka','Eggs poached in spiced tomato pepper sauce','310 kcal | 18g protein']],
+    [['🫐 Fruit & Walnuts','Figs, grapes, walnuts, a drizzle of honey','220 kcal | 5g protein'],['🥙 Stuffed Grape Leaves','4 dolmades with tzatziki dip','200 kcal | 7g protein']],
+    [['🐟 Greek Fish Plate','Baked sea bass, tabbouleh, hummus, pita','500 kcal | 38g protein'],['🥗 Greek Salad + Falafel','Falafel, cucumber, tomato, feta, olive oil','440 kcal | 20g protein']],
+    [['🧆 Hummus & Olives','Creamy hummus, mixed olives, pita chips','230 kcal | 8g protein'],['🫒 Caprese','Fresh mozzarella, tomatoes, basil, olive oil','210 kcal | 12g protein']],
+    [['🫘 Lamb & Chickpea Stew','Slow cooked lamb, chickpeas, herbs','560 kcal | 44g protein'],['🍝 Pasta al Olio','Whole wheat pasta, EVOO, garlic, parmesan','480 kcal | 18g protein']],
+  ]
+};
+
+function generateDietPlan() {
+  const type = document.getElementById('diet-type').value;
+  const options = mealOptions[type] || mealOptions['balanced'];
+  let html = '';
+  meals.forEach((m, i) => {
+    const [opt1, opt2] = options[i];
+    html += `
+      <div class="card">
+        <div class="meal-time-header">
+          <div class="dot" style="background:${m.dot};"></div>
+          <h3>${m.time}</h3>
+        </div>
+        <div class="meal-option" style="background:${m.bg};" onclick="selectMeal(this, 'meal${i}', 'A')">
+          <input type="radio" name="meal${i}" value="A">
+          <div class="meal-info">
+            <h4 style="color:${m.color};">${opt1[0]}</h4>
+            <p>${opt1[1]}</p>
+            <span class="meal-badge" style="background:${m.color}; color:#fff;">${opt1[2]}</span>
+          </div>
+        </div>
+        <div style="text-align:center; font-size:0.8rem; color:#9ca3af; margin:2px 0;">— or —</div>
+        <div class="meal-option" style="background:${m.bg};" onclick="selectMeal(this, 'meal${i}', 'B')">
+          <input type="radio" name="meal${i}" value="B">
+          <div class="meal-info">
+            <h4 style="color:${m.color};">${opt2[0]}</h4>
+            <p>${opt2[1]}</p>
+            <span class="meal-badge" style="background:${m.color}; color:#fff;">${opt2[2]}</span>
+          </div>
+        </div>
+      </div>`;
+  });
+  html += `<button class="btn btn-green" onclick="getDietAIAdvice()" style="width:100%; margin-bottom:1rem;">🤖 Get AI Nutrition Coach Tips →</button>`;
+  const plan = document.getElementById('diet-plan');
+  plan.innerHTML = html;
+  plan.style.display = 'block';
+  plan.style.animation = 'none';
+  requestAnimationFrame(() => { plan.style.animation = ''; });
+}
+
+function selectMeal(el, name, val) {
+  const parent = el.closest('.card');
+  parent.querySelectorAll('.meal-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+async function getDietAIAdvice() {
+  const type = document.getElementById('diet-type').value;
+  const allergies = document.getElementById('allergies').value;
+  const box = document.getElementById('diet-ai-box');
+  box.style.display = 'block';
+  box.innerHTML = `<div class="ai-box" style="background:#f0fdf4; border-color:#10b981; color:#065f46;">
+    🥗 <strong>Nutrition coach analyzing your plan...</strong>
+    <div class="loading-dots" style="margin-top:8px;"><span style="background:#10b981;"></span><span style="background:#14b8a6;"></span><span style="background:#3b82f6;"></span></div>
+  </div>`;
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
+        messages: [{ role: 'user', content: `I'm following a ${type} diet${allergies ? ', avoiding: ' + allergies : ''}. My BMI data: ${JSON.stringify(bmiData)}. Give me 6 specific nutrition tips for this diet type, meal timing advice, hydration tips, and one supplement recommendation. Be enthusiastic and use emojis! Format with bold headers for each tip.` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Could not get tips.';
+    box.innerHTML = `<div class="ai-box" style="background:#f0fdf4; border-color:#10b981; color:#1e1b4b;">
+      <strong style="color:#10b981; font-size:1rem;">🥗 Your Nutrition Coach Says:</strong>
+      <div style="margin-top:10px; white-space:pre-wrap;">${text}</div>
+    </div>`;
+  } catch(e) {
+    box.innerHTML = `<div class="ai-box" style="background:#fef2f2; border-color:#ef4444; color:#991b1b;">⚠️ AI connection failed. Check API key.</div>`;
+  }
+}
+
+/* ─── WORKOUT PLAN ─── */
+const dayColors = [
+  {h:'#7c3aed',b:'#ede9fe',t:'#5b21b6'},
+  {h:'#ec4899',b:'#fce7f3',t:'#9d174d'},
+  {h:'#f97316',b:'#ffedd5',t:'#9a3412'},
+  {h:'#10b981',b:'#d1fae5',t:'#065f46'},
+  {h:'#3b82f6',b:'#dbeafe',t:'#1e40af'},
+  {h:'#f59e0b',b:'#fef3c7',t:'#92400e'},
+  {h:'#14b8a6',b:'#ccfbf1',t:'#134e4a'},
+];
+
+const workoutData = {
+  3: [
+    { day: 'Mon', name: 'Full Body A', exercises: [['🏋️ Squats','4x8'],['🤸 Push-ups','3x15'],['🚣 Rows','3x12'],['🧗 Plank','3x45s']] },
+    { day: 'Wed', name: 'Full Body B', exercises: [['🦵 Lunges','3x12'],['💪 OHP','3x10'],['🔙 Pull-ups','3x8'],['🏃 Cardio','20min']] },
+    { day: 'Fri', name: 'Full Body C', exercises: [['🏋️ Deadlift','4x6'],['🤸 Dips','3x12'],['🧘 Cable Row','3x12'],['🦵 Leg Press','3x15']] },
+  ],
+  4: [
+    { day: 'Mon', name: 'Upper A', exercises: [['🤸 Bench Press','4x8'],['🚣 Pull-ups','4x6'],['💪 OHP','3x10'],['🦾 Curls','3x12']] },
+    { day: 'Tue', name: 'Lower A', exercises: [['🏋️ Squats','4x8'],['🦵 Leg Press','3x15'],['🦶 Calf Raise','4x15'],['🧘 Hip Thrust','3x12']] },
+    { day: 'Thu', name: 'Upper B', exercises: [['💪 Incline Press','4x10'],['🔙 Cable Row','4x10'],['🏔️ Lateral Raise','3x15'],['🦾 Tricep Push','3x15']] },
+    { day: 'Fri', name: 'Lower B', exercises: [['🏋️ Deadlift','4x5'],['🦵 Bulgarian Split','3x10'],['🧗 Plank','3x60s'],['🏃 HIIT','15min']] },
+  ],
+  5: [
+    { day: 'Mon', name: '💪 Push', exercises: [['🤸 Bench Press','4x8'],['💪 Incline DB','3x10'],['🏔️ OHP','4x8'],['🦾 Triceps','3x15']] },
+    { day: 'Tue', name: '🔙 Pull', exercises: [['🚣 Pull-ups','4x8'],['🚣 Barbell Row','4x8'],['💪 Face Pulls','3x15'],['🦾 Curls','4x12']] },
+    { day: 'Wed', name: '🦵 Legs', exercises: [['🏋️ Squats','5x5'],['🦵 Leg Press','3x12'],['🦶 Calf Raise','4x20'],['🧘 Hip Thrust','3x12']] },
+    { day: 'Fri', name: '💪 Push+', exercises: [['💪 DB Fly','4x10'],['🤸 Push-ups','3xMax'],['🏔️ Arnold Press','3x12'],['💪 Skull Crush','3x15']] },
+    { day: 'Sat', name: '🔙 Pull+', exercises: [['🚣 Deadlift','4x5'],['🔙 Lat Pull','4x10'],['🚣 Seated Row','3x12'],['🧗 Plank','4x60s']] },
+  ],
+  6: [
+    { day: 'Mon', name: '💪 Chest', exercises: [['🤸 Bench','5x5'],['💪 Incline','4x8'],['🤸 Cable Fly','3x15'],['🤸 Dips','3xMax']] },
+    { day: 'Tue', name: '🔙 Back', exercises: [['🚣 Deadlift','5x5'],['🚣 Pull-ups','4x8'],['🚣 Barbell Row','4x8'],['🚣 Lat Pull','3x12']] },
+    { day: 'Wed', name: '🦵 Legs', exercises: [['🏋️ Squats','5x5'],['🦵 Leg Press','4x12'],['🦵 Hack Squat','3x10'],['🦶 Calves','5x20']] },
+    { day: 'Thu', name: '🏔️ Shoulders', exercises: [['🏔️ OHP','5x5'],['🏔️ Lateral Rise','4x15'],['🏔️ Front Raise','3x12'],['🏔️ Shrugs','3x15']] },
+    { day: 'Fri', name: '🦾 Arms', exercises: [['🦾 Barbell Curl','4x10'],['🦾 Skull Crush','4x10'],['🦾 Hammer Curl','3x12'],['🦾 Tricep Rope','3x15']] },
+    { day: 'Sat', name: '🎯 Core', exercises: [['🧗 Plank','5x60s'],['🧗 Dragon Flag','3x8'],['🧗 Ab Wheel','3x10'],['🏃 Cardio','30min']] },
+  ]
+};
+
+function generateWorkout() {
+  const days = +document.getElementById('train-days').value;
+  const goal = document.getElementById('train-goal').value;
+  const exp = document.getElementById('experience').value;
+  const data = workoutData[days];
+
+  const daysOfWeek = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  let allDays = daysOfWeek.map((d, i) => {
+    const workout = data.find(w => w.day === d);
+    return { day: d, workout, idx: i };
+  });
+
+  let html = `
+    <div class="card">
+      <div class="card-title"><span class="icon" style="background:#ffedd5;">📅</span>Your Weekly Training Plan</div>
+      <div class="week-grid">`;
+
+  allDays.forEach(({ day, workout, idx }) => {
+    const c = dayColors[idx];
+    if (workout) {
+      html += `<div class="day-col">
+        <div class="day-header" style="background:${c.h}; color:#fff;">${day}</div>`;
+      workout.exercises.forEach(([name, sets]) => {
+        html += `<div class="exercise-pill" style="background:${c.b}; color:${c.t};" title="${name}">
+          <div style="font-weight:700;">${name}</div>
+          <div style="opacity:0.7; font-size:0.72rem;">${sets}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    } else {
+      html += `<div class="day-col">
+        <div class="day-header" style="background:#f3f4f6; color:#9ca3af;">${day}</div>
+        <div class="exercise-pill" style="background:#f9fafb; color:#9ca3af; text-align:center;">😴 Rest</div>
+      </div>`;
+    }
+  });
+
+  html += `</div></div>`;
+
+  // Muscle diagram
+  html += `
+  <div class="card">
+    <div class="card-title"><span class="icon" style="background:#dbeafe;">🫁</span>Muscle Group Focus Map</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; align-items:center;">
+      <svg class="muscle-svg" viewBox="0 0 200 380" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body outline -->
+        <ellipse cx="100" cy="45" rx="30" ry="35" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1.5"/>
+        <!-- Chest -->
+        <rect x="65" y="90" width="30" height="28" rx="8" fill="${selectedMuscles.has('chest') ? '#7c3aed' : '#c4b5fd'}" class="muscle-group" onclick="highlightMuscle('chest', this)" opacity="0.9"/>
+        <rect x="105" y="90" width="30" height="28" rx="8" fill="${selectedMuscles.has('chest') ? '#7c3aed' : '#c4b5fd'}" class="muscle-group" opacity="0.9"/>
+        <text x="100" y="108" text-anchor="middle" font-size="8" fill="${selectedMuscles.has('chest') ? '#fff' : '#5b21b6'}" font-weight="bold">CHEST</text>
+        <!-- Shoulders -->
+        <ellipse cx="55" cy="95" rx="16" ry="18" fill="${selectedMuscles.has('shoulders') ? '#ec4899' : '#fbcfe8'}" class="muscle-group"/>
+        <ellipse cx="145" cy="95" rx="16" ry="18" fill="${selectedMuscles.has('shoulders') ? '#ec4899' : '#fbcfe8'}" class="muscle-group"/>
+        <!-- Arms -->
+        <rect x="38" y="118" width="14" height="50" rx="7" fill="${selectedMuscles.has('arms') ? '#f97316' : '#fed7aa'}" class="muscle-group"/>
+        <rect x="148" y="118" width="14" height="50" rx="7" fill="${selectedMuscles.has('arms') ? '#f97316' : '#fed7aa'}" class="muscle-group"/>
+        <!-- Core -->
+        <rect x="78" y="125" width="44" height="55" rx="8" fill="${selectedMuscles.has('core') ? '#10b981' : '#a7f3d0'}" class="muscle-group"/>
+        <text x="100" y="155" text-anchor="middle" font-size="7" fill="${selectedMuscles.has('core') ? '#fff' : '#065f46'}" font-weight="bold">CORE</text>
+        <!-- Back (simplified as side lines) -->
+        <!-- Legs -->
+        <rect x="70" y="188" width="26" height="80" rx="10" fill="${selectedMuscles.has('legs') ? '#3b82f6' : '#bfdbfe'}" class="muscle-group"/>
+        <rect x="104" y="188" width="26" height="80" rx="10" fill="${selectedMuscles.has('legs') ? '#3b82f6' : '#bfdbfe'}" class="muscle-group"/>
+        <text x="100" y="235" text-anchor="middle" font-size="7" fill="${selectedMuscles.has('legs') ? '#fff' : '#1e40af'}" font-weight="bold">LEGS</text>
+        <!-- Glutes -->
+        <ellipse cx="80" cy="192" rx="18" ry="14" fill="${selectedMuscles.has('glutes') ? '#f59e0b' : '#fde68a'}" class="muscle-group"/>
+        <ellipse cx="120" cy="192" rx="18" ry="14" fill="${selectedMuscles.has('glutes') ? '#f59e0b' : '#fde68a'}" class="muscle-group"/>
+        <!-- Calves -->
+        <rect x="74" y="275" width="18" height="50" rx="9" fill="${selectedMuscles.has('calves') ? '#14b8a6' : '#99f6e4'}" class="muscle-group"/>
+        <rect x="108" y="275" width="18" height="50" rx="9" fill="${selectedMuscles.has('calves') ? '#14b8a6' : '#99f6e4'}" class="muscle-group"/>
+      </svg>
+      <div>
+        <p style="font-size:0.9rem; color:#6b7280; margin-bottom:1rem;">Highlighted muscles based on your selection and this week's plan:</p>
+        <div style="display:grid; gap:8px;">
+          ${[
+            ['💜 Chest','#ede9fe','#5b21b6'],
+            ['💗 Shoulders','#fce7f3','#9d174d'],
+            ['🧡 Arms','#ffedd5','#9a3412'],
+            ['💚 Core','#d1fae5','#065f46'],
+            ['💙 Legs','#dbeafe','#1e40af'],
+            ['💛 Glutes','#fef3c7','#92400e'],
+            ['🩵 Calves','#ccfbf1','#134e4a'],
+          ].map(([l,bg,c]) => `<div style="display:flex; align-items:center; gap:8px; padding:6px 12px; background:${bg}; border-radius:8px;">
+            <span style="font-size:0.85rem; font-weight:600; color:${c};">${l}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>`;
+
+  // Exercise demos
+  html += `
+  <div class="card">
+    <div class="card-title"><span class="icon" style="background:#fce7f3;">🎬</span>Exercise Demos & Tips</div>
+    <div style="display:grid; gap:12px;">`;
+
+  const demos = [
+    ['🏋️ Squat', '#ede9fe', '#5b21b6', 'Stand with feet shoulder-width apart. Push knees out as you descend. Keep chest up and core tight. Drive through heels to stand.', '4-5 sets of 5-12 reps'],
+    ['🤸 Bench Press', '#fce7f3', '#9d174d', 'Lie flat, grip slightly wider than shoulders. Lower bar to mid-chest with control. Keep feet flat, back slightly arched, elbows at 45°.', '3-4 sets of 6-10 reps'],
+    ['🚣 Pull-up', '#d1fae5', '#065f46', 'Grip bar wider than shoulders, palms away. Initiate with shoulder blades down. Drive elbows toward hips. Full extension at bottom.', '3-4 sets of 5-10 reps'],
+    ['🏋️ Deadlift', '#dbeafe', '#1e40af', 'Bar over mid-foot, hips hinged, back flat. Engage lats before pulling. Push floor away, lock hips at top. Control the descent.', '4-5 sets of 3-8 reps'],
+  ];
+
+  demos.forEach(([name, bg, color, desc, sets]) => {
+    html += `<div style="display:flex; gap:14px; padding:14px; background:${bg}; border-radius:14px; align-items:flex-start;">
+      <div style="font-size:2rem;">${name.split(' ')[0]}</div>
+      <div>
+        <div style="font-weight:800; color:${color}; font-size:1rem;">${name}</div>
+        <div style="font-size:0.85rem; margin:4px 0 6px; line-height:1.5;">${desc}</div>
+        <span class="chip" style="background:${color}; color:#fff;">${sets}</span>
+      </div>
+    </div>`;
+  });
+
+  html += `</div></div>`;
+  html += `<button class="btn btn-orange" onclick="getWorkoutAI()" style="width:100%; margin-bottom:1rem;">🤖 Get AI Coaching Tips →</button>`;
+
+  const plan = document.getElementById('workout-plan');
+  plan.innerHTML = html;
+  plan.style.display = 'block';
+}
+
+function highlightMuscle(name, el) {
+  toggleMuscle(document.querySelector(`[onclick*="${name}"]`), name);
+}
+
+async function getWorkoutAI() {
+  const days = document.getElementById('train-days').value;
+  const exp = document.getElementById('experience').value;
+  const goal = document.getElementById('train-goal').value;
+  const muscles = [...selectedMuscles].join(', ') || 'all muscle groups';
+  const box = document.getElementById('body-ai-box');
+  box.style.display = 'block';
+  box.innerHTML = `<div class="ai-box" style="background:#fff7ed; border-color:#f97316; color:#9a3412;">
+    💪 <strong>Building your personalized coaching tips...</strong>
+    <div class="loading-dots" style="margin-top:8px;"><span style="background:#f97316;"></span><span style="background:#f59e0b;"></span><span style="background:#ec4899;"></span></div>
+  </div>`;
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6', max_tokens: 1000,
+        messages: [{ role: 'user', content: `I'm a ${exp} training ${days} days/week for ${goal}. Focus muscles: ${muscles}. BMI: ${bmiData.bmi || 'not measured'}, goal: ${bmiData.goal || 'build muscle'}. Give me: 5 specific training tips, progressive overload advice, recovery tips, pre/post workout nutrition for muscle building. Use emojis and bold headers. Be motivating and specific!` }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'No tips available.';
+    box.innerHTML = `<div class="ai-box" style="background:#fff7ed; border-color:#f97316; color:#1e1b4b;">
+      <strong style="color:#f97316; font-size:1rem;">💪 Your Bodybuilding Coach Says:</strong>
+      <div style="margin-top:10px; white-space:pre-wrap;">${text}</div>
+    </div>`;
+  } catch(e) {
+    box.innerHTML = `<div class="ai-box" style="background:#fef2f2; border-color:#ef4444; color:#991b1b;">⚠️ AI connection failed. Check API key.</div>`;
+  }
+}
+</script>
+</body>
+</html>
